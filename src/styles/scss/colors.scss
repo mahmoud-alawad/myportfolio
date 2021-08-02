@@ -1,0 +1,97 @@
+$white: #fff;
+$black: #000;
+$margin__default: 1rem;
+$padding__default: 1rem;
+$transition: all 0.4s ease;
+$main: #d9643a;
+$yallow: #FFBB00;
+$shadow: rgb(217, 100, 58);
+  
+$transparent: rgba(255, 255, 255, 0.408);
+$gradient: linear-gradient(
+    90deg,
+    #040404,
+    #656565,
+    #000000
+  /*  #09203F,
+    #868F96,
+    #537895,
+    #596164*/
+);
+
+
+
+$colors: (
+  white: #FFF,
+  gray: #656565,
+  background: #333,
+  primary: (
+    base: #F95700FF,
+    light: lighten(#d9643a, 15%),
+    dark: darken(#d9643a, 15%)
+  ),
+  secondary: (
+    base: #0969A2,
+    light: lighten(#0969A2, 15%),
+    dark: darken(#0969A2, 15%)
+  )
+);
+
+// variable prefixes for CSS4 output
+$color-prefix: --color-;
+
+// retrieve color from map with Sass ie. `color(primary, base)`
+@function color($color-name, $color-variant:nil, $true-val:false) {
+  
+  // we need to return the color value
+  @if $true-val == true {
+    // color variant is optional
+    @if ($color-variant != nil) {
+      // map inception, need two deep
+      @return map-get(map-get($colors,$color-name),$color-variant);
+
+    } @else {
+      // single-level color, one deep
+      @return map-get($colors,$color-name);
+
+    }
+  // if we're only returning the CSS4 variable
+  } @else {
+    // color variant is optional
+    @if ($color-variant != nil) {
+      // map inception, need two names
+      @return var(#{$color-prefix}#{$color-name}-#{$color-variant});
+
+    } @else {
+      // single-level color, one name
+      @return var(#{$color-prefix}#{$color-name});
+
+    }
+  }
+}
+
+
+/* ripped CSS4 vars out of color map */
+:root {
+  
+  // each item in color map
+  @each $name, $color in $colors {
+    
+    // maps require a second loop
+    @if type-of($color) == "map" {
+      
+      // each item in sub map
+      @each $subname, $subcolor in $color {  
+        // --color-primary-base
+        #{$color-prefix}#{$name}-#{$subname}: $subcolor;
+      }
+    
+    // normal colors
+    } @if type-of($color) == "color" {
+      
+      // --color-background
+      #{$color-prefix}#{$name}: $color;
+      
+    }
+  }
+}
